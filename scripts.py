@@ -1,12 +1,36 @@
 import sqlite3
 import os
 from dotenv import load_dotenv
+from sqlalchemy import create_engine, Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, relationship
+
 load_dotenv()
 
-DB_URL = os.environ['DATABASE_URL']
+DATABASE_URL = os.environ['DATABASE_URL']
 
-def create_connection():
-    return sqlite3.connect(DB_URL)
+engine = create_engine(
+    DATABASE_URL, connect_args={"check_same_thread": False}
+)
+
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+Base = declarative_base()
+
+class User(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True, index=True)
+    first_name = Column(String)
+    last_name = Column(String)
+    about = Column(String)
+    website = Column(String)
+    phone = Column(String)
+
+class Login(Base):
+    __tablename__ = "login"
+    user_id = Column(Integer, ForeignKey("users.id"))
+    email = Column(String, unique=True, index=True)
+    password = Column(String)
 
 def create_users_table():
     conn = create_connection()
