@@ -22,7 +22,7 @@ class Brag(db.Model):
     content = db.Column(db.Text(), nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    brag_tags = db.relationship('bragtags', backref='brags', lazy=True)
+    bragtags = db.relationship('bragtags', backref='brags', lazy=True)
 
     def __repr__(self):
         return f'{self.id} {self.headline} {self.content} {self.timestamp} {self.user_id}'
